@@ -1,0 +1,39 @@
+{
+  "id": "my_module",
+  "name": "我的模块",
+  "name_en": "My Module",
+  "description": "用一句话描述你的模块功能（中文）",
+  "description_en": "Describe what your module does in one sentence (English)",
+  "version": "1.0",
+  "icon": "extension",
+  "soLibraries": [],
+  "h5Page": "index.html",
+  "pluginJar": "plugin.jar",
+  "pluginClass": "ai.rorsch.moduleplugins.my_module.MyModulePlugin",
+  "soLoadMode": "skip",
+  "capabilities": [],
+  "permissions": [],
+  "developer": {
+    "name": "Your Name",
+    "email": "your@email.com",
+    "url": "https://github.com/yourusername"
+  },
+  "apis": [
+    {
+      "name": "hello",
+      "desc": "向用户打招呼，当用户说【你好】【测试模块】时使用",
+      "desc_en": "Greet the user. Use when user says 'hello' or 'test module'",
+      "params": ["name"],
+      "paramDesc": ["用户的名字"],
+      "paramDesc_en": ["The user's name"]
+    },
+    {
+      "name": "doTask",
+      "desc": "执行你的核心功能（替换为实际描述）",
+      "desc_en": "Execute your core function (replace with actual description)",
+      "params": ["input"],
+      "paramDesc": ["输入参数说明"],
+      "paramDesc_en": ["Input parameter description"]
+    }
+  ]
+}
