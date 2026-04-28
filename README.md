@@ -16,9 +16,20 @@
 
 Click **"Use this template"** button above (or on GitHub) to create your own module repository.
 
-### 2. Customize Your Module
+### 2. Pick a Starting Point
 
-Rename and edit the files in `source/my_module/`:
+This template now includes two examples:
+
+| Example | Use when | Shows |
+|---|---|---|
+| `source/my_module` | You want the safest default starter | Action routing, parameters, private storage, `_displayHtml`, `_openModule` |
+| `source/network_demo` | Your module needs an HTTP/API call | `capabilities`, `android.permission.INTERNET`, URL validation, timeouts |
+
+For most modules, copy `source/my_module`, rename it, then add only the capabilities you need.
+
+### 3. Customize Your Module
+
+Rename and edit the files in `source/my_module/` or copy one of the examples:
 
 | File | What to do |
 |------|-----------|
@@ -26,16 +37,23 @@ Rename and edit the files in `source/my_module/`:
 | `plugin_src/.../MyModulePlugin.java` | Implement your logic in the `invoke()` method |
 | `index.html` | (Optional) Create a settings/config UI page |
 
-### 3. Build & Test
+Keep these fields in sync:
+
+- `manifest.json` `id`
+- `manifest.json` `pluginClass`
+- Java `package`
+- Folder path under `plugin_src`
+
+### 4. Build & Test
 
 ```powershell
-# Clone PandaGenieModules for the build toolkit
-git clone https://github.com/Rorschach123/PandaGenieModules.git
+# Clone PandaGenieSource for the build toolkit
+git clone https://github.com/Rorschach123/PandaGenieSource.git
 
-# Copy your module source into PandaGenieModules' parent directory
+# Copy your module source into PandaGenieSource/source/
 # Or symlink: your source/my_module → PandaGenieSource/source/my_module
 
-cd PandaGenieModules/module-dev-toolkit/
+cd PandaGenieSource/module-dev-toolkit/
 
 # Generate your developer signing key (first time only)
 .\mk_module.ps1 -Action init-dev-signing
@@ -47,15 +65,17 @@ cd PandaGenieModules/module-dev-toolkit/
 adb push ..\modules\my_module.mod /sdcard/PandaGenie/modules/
 ```
 
-### 4. Test on Device
+### 5. Test on Device
 
 1. Open PandaGenie app → Settings → Enable **Developer Mode**
 2. Restart the app
 3. Your module is now loaded! Try chatting:
    - *"Test my module"*
    - *"Say hello to Alice"*
+   - *"Save preference theme=dark with my module"*
+   - *"Fetch https://httpbin.org/json with network demo"*
 
-### 5. Publish
+### 6. Publish
 
 When your module is ready:
 
@@ -87,6 +107,41 @@ public interface ModulePlugin {
 - `paramsJson` — JSON string with parameters (matches `apis[].params` in manifest.json)
 - Return a JSON string: `{"success": true, "output": "..."}` or `{"success": false, "error": "..."}`
 
+Recommended success response shape:
+
+```json
+{
+  "success": true,
+  "output": "{\"count\":2,\"items\":[\"a\",\"b\"]}",
+  "_displayText": "Rendered 2 items.",
+  "_displayHtml": "<div class='pg-card'>...</div>"
+}
+```
+
+Optional response fields supported by the app:
+
+| Field | Purpose |
+|---|---|
+| `_displayText` | Human-readable fallback text |
+| `_displayHtml` | Rich mini-card in chat; use `HtmlOutputHelper` |
+| `_displayHtmlFull` | Full detail page for larger results |
+| `_openModule` | Open the module `index.html` page |
+| `_richContent` | Attach generated files/images |
+| `_vaultSave` | Offer generated content for user vault/save flows |
+
+## Common Development Patterns
+
+| Pattern | Template/reference |
+|---|---|
+| Pure logic, no permissions | `source/my_module`: `hello`, `doTask` |
+| Private module data | `source/my_module`: `savePreference`, `readPreference` |
+| Chat card UI | `source/my_module`: `renderSummary` |
+| Open H5 UI | `source/my_module`: `openPage` |
+| Network calls | `source/network_demo`: `httpGet` |
+| Images/files | See `qrcode`, `image_tools`, `notes` in PandaGenieSource |
+
+Private data via `ModuleStorage.from(context)` does not need `file_read` or `file_write`. Only declare file capabilities when you access user-visible shared storage.
+
 ## Writing Good API Descriptions
 
 The AI reads your `manifest.json` to understand what your module can do. Good descriptions = better AI behavior.
@@ -114,9 +169,9 @@ The AI reads your `manifest.json` to understand what your module can do. Good de
 
 ## Resources
 
-- [Full Module Development Guide](https://github.com/Rorschach123/PandaGenieModules/blob/main/module-dev-toolkit/MODULE_DEVELOPMENT_GUIDE.md)
+- [Vibe Coding Guide](docs/VIBE_CODING_GUIDE.md)
+- [Full Module Development Guide](https://github.com/Rorschach123/PandaGenieSource/blob/main/module-dev-toolkit/MODULE_DEVELOPMENT_GUIDE.md)
 - [PandaGenie Source Code](https://github.com/Rorschach123/PandaGenieSource)
-- [Module Marketplace](https://github.com/Rorschach123/PandaGenieModules)
 - [Discord Community](https://discord.gg/Cfc7pjrjt2)
 
 ---

@@ -12,15 +12,18 @@
             color: #333;
             padding: 16px;
         }
-        h1 { font-size: 20px; margin-bottom: 16px; color: #6c5ce7; }
+        h1 { font-size: 20px; margin-bottom: 16px; color: #2f6f6d; }
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 16px;
             margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .info { color: #888; font-size: 14px; }
+        .info { color: #666; font-size: 14px; line-height: 1.55; }
+        code { background: #eef3f2; padding: 2px 5px; border-radius: 4px; }
+        ul { margin-left: 18px; margin-top: 8px; }
+        li { margin: 6px 0; }
     </style>
 </head>
 <body>
@@ -28,15 +31,18 @@
     <div class="card">
         <p>This is the optional UI page for your module.</p>
         <p class="info" style="margin-top: 8px;">
-            Users can view this page from the module settings.
-            Use it for configuration, status display, or any interactive UI your module needs.
+            Return <code>_openModule: true</code> from Java to open this page from chat.
+            Use it for settings, status, previews, or any interactive workflow that does not fit in a chat bubble.
         </p>
     </div>
     <div class="card">
-        <p class="info">
-            This page runs inside a WebView in the PandaGenie app.
-            You can use standard HTML/CSS/JS.
-        </p>
+        <p><strong>Starter actions</strong></p>
+        <ul class="info">
+            <li><code>hello</code> returns a simple JSON response and HTML mini-card.</li>
+            <li><code>doTask</code> demonstrates parameter validation and structured output.</li>
+            <li><code>savePreference</code> and <code>readPreference</code> use module-private storage.</li>
+            <li><code>renderSummary</code> demonstrates table output via <code>_displayHtml</code>.</li>
+        </ul>
     </div>
 </body>
 </html>

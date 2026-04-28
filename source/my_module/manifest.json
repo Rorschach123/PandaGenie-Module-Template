@@ -29,11 +29,43 @@
     },
     {
       "name": "doTask",
-      "desc": "执行你的核心功能（替换为实际描述）",
-      "desc_en": "Execute your core function (replace with actual description)",
+      "desc": "处理一段输入文本，返回裁剪、长度、大写等结构化结果；用于演示参数校验和业务JSON输出",
+      "desc_en": "Process input text and return trimmed text, length and uppercase form. Demonstrates validation and structured JSON output",
       "params": ["input"],
-      "paramDesc": ["输入参数说明"],
-      "paramDesc_en": ["Input parameter description"]
+      "paramDesc": ["要处理的文本"],
+      "paramDesc_en": ["Text to process"]
+    },
+    {
+      "name": "savePreference",
+      "desc": "保存一个键值到模块私有存储，不需要外部存储权限；用于演示 ModuleStorage",
+      "desc_en": "Save a key/value pair into module-private storage without external storage permission. Demonstrates ModuleStorage",
+      "params": ["key", "value"],
+      "paramDesc": ["键名", "要保存的值"],
+      "paramDesc_en": ["Key name", "Value to save"]
+    },
+    {
+      "name": "readPreference",
+      "desc": "从模块私有存储读取一个键值；用于演示持久化读取",
+      "desc_en": "Read a value from module-private storage. Demonstrates persistent reads",
+      "params": ["key"],
+      "paramDesc": ["键名"],
+      "paramDesc_en": ["Key name"]
+    },
+    {
+      "name": "renderSummary",
+      "desc": "把 items 数组渲染成聊天气泡里的 HTML 表格卡片；用于演示 _displayHtml",
+      "desc_en": "Render an items array as an HTML table card in chat. Demonstrates _displayHtml",
+      "params": ["items"],
+      "paramDesc": ["字符串数组，可选"],
+      "paramDesc_en": ["String array, optional"]
+    },
+    {
+      "name": "openPage",
+      "desc": "打开模块 H5 页面；用于演示 _openModule",
+      "desc_en": "Open the module H5 page. Demonstrates _openModule",
+      "params": [],
+      "paramDesc": [],
+      "paramDesc_en": []
     }
   ]
 }
