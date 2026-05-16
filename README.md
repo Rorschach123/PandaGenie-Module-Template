@@ -1,101 +1,49 @@
 <div align="center">
 
-# 🐼 PandaGenie Module Template
+# PandaGenie Module Template
 
-**Start building your own PandaGenie module in minutes**
+**PandaGenie 热加载模块开发模板**
 
-[![Use this template](https://img.shields.io/badge/Use%20this-Template-6c5ce7?style=for-the-badge)](https://github.com/Rorschach123/PandaGenie-Module-Template/generate)
+[使用模板](https://github.com/Rorschach123/PandaGenie-Module-Template/generate) | [官网](https://cf.pandagenie.ai) | [模块提交](https://cf.pandagenie.ai/sign) | [PandaGenieSource](https://github.com/Rorschach123/PandaGenieSource) | [Discord](https://discord.gg/Cfc7pjrjt2)
 
 </div>
 
 ---
 
-## Quick Start
+## 中文说明
 
-### 1. Use This Template
+这个仓库用于开发 PandaGenie 内部热加载模块。模块会被 PandaGenie App 安装、加载，并在用户通过自然语言提出任务时被 LLM 调度执行。
 
-Click **"Use this template"** button above (or on GitHub) to create your own module repository.
+如果你想让一个独立 Android App 被 PandaGenie 调用，请使用 [PandaGenieSDK](https://github.com/Rorschach123/PandaGenieSDK) 和 [SDK Provider 模板](https://github.com/Rorschach123/PandaGenieSDK-Provider-Template)。如果你想给 PandaGenie 增加一个内部能力模块，就从这个模板开始。
 
-### 2. Pick a Starting Point
+## 快速开始
 
-This template now includes two examples:
+1. 点击 GitHub 上的 **Use this template** 创建自己的模块仓库。
+2. 从 `source/my_module` 复制一个最小模块。
+3. 修改 `manifest.json` 中的 `id`、`name`、`description`、`apis`、`capabilities` 和中英文描述。
+4. 在 `plugin_src/.../MyModulePlugin.java` 中实现 `invoke()`。
+5. 使用 PandaGenieSource 的 `module-dev-toolkit` 打包、签名、安装测试。
+6. 到 [模块提交页](https://cf.pandagenie.ai/sign) 上传发布。
 
-| Example | Use when | Shows |
+## 模板示例
+
+| 示例 | 适用场景 | 展示内容 |
 |---|---|---|
-| `source/my_module` | You want the safest default starter | Action routing, parameters, private storage, `_displayHtml`, `_openModule` |
-| `source/network_demo` | Your module needs an HTTP/API call | `capabilities`, `android.permission.INTERNET`, URL validation, timeouts |
+| `source/my_module` | 大多数模块的安全起点 | Action 路由、参数解析、私有存储、`_displayHtml`、打开 H5 页面。 |
+| `source/network_demo` | 需要访问 HTTP/API 的模块 | `network` 能力声明、`INTERNET` 权限、URL 校验、超时和结果预览。 |
 
-For most modules, copy `source/my_module`, rename it, then add only the capabilities you need.
+## 模块结构
 
-### 3. Customize Your Module
-
-Rename and edit the files in `source/my_module/` or copy one of the examples:
-
-| File | What to do |
-|------|-----------|
-| `manifest.json` | Change `id`, `name`, `description`, and define your `apis` |
-| `plugin_src/.../MyModulePlugin.java` | Implement your logic in the `invoke()` method |
-| `index.html` | (Optional) Create a settings/config UI page |
-
-Keep these fields in sync:
-
-- `manifest.json` `id`
-- `manifest.json` `pluginClass`
-- Java `package`
-- Folder path under `plugin_src`
-
-### 4. Build & Test
-
-```powershell
-# Clone PandaGenieSource for the build toolkit
-git clone https://github.com/Rorschach123/PandaGenieSource.git
-
-# Copy your module source into PandaGenieSource/source/
-# Or symlink: your source/my_module → PandaGenieSource/source/my_module
-
-cd PandaGenieSource/module-dev-toolkit/
-
-# Generate your developer signing key (first time only)
-.\mk_module.ps1 -Action init-dev-signing
-
-# Build your module
-.\mk_module.ps1 -Action pack -Modules "my_module"
-
-# Push to device
-adb push ..\modules\my_module.mod /sdcard/PandaGenie/modules/
-```
-
-### 5. Test on Device
-
-1. Open PandaGenie app → Settings → Enable **Developer Mode**
-2. Restart the app
-3. Your module is now loaded! Try chatting:
-   - *"Test my module"*
-   - *"Say hello to Alice"*
-   - *"Save preference theme=dark with my module"*
-   - *"Fetch https://httpbin.org/json with network demo"*
-
-### 6. Publish
-
-When your module is ready:
-
-- **Option A (Recommended):** Upload to [cf.pandagenie.ai](https://cf.pandagenie.ai) for automatic signing & publishing
-- **Option B:** Submit a PR to [PandaGenieSource](https://github.com/Rorschach123/PandaGenieSource)
-
----
-
-## Module Structure
-
-```
+```text
 source/my_module/
-├── manifest.json                                    ← Module metadata & API definitions
-├── index.html                                       ← Optional UI page (WebView)
+├── manifest.json
+├── index.html
 └── plugin_src/
     └── ai/rorsch/moduleplugins/my_module/
-        └── MyModulePlugin.java                      ← Your plugin logic
+        └── MyModulePlugin.java
 ```
 
-## The Only Interface You Need
+## 核心接口
 
 ```java
 public interface ModulePlugin {
@@ -103,79 +51,99 @@ public interface ModulePlugin {
 }
 ```
 
-- `action` — which API is being called (matches `apis[].name` in manifest.json)
-- `paramsJson` — JSON string with parameters (matches `apis[].params` in manifest.json)
-- Return a JSON string: `{"success": true, "output": "..."}` or `{"success": false, "error": "..."}`
-
-Recommended success response shape:
+推荐返回结构：
 
 ```json
 {
   "success": true,
   "output": "{\"count\":2,\"items\":[\"a\",\"b\"]}",
-  "_displayText": "Rendered 2 items.",
+  "_displayText": "已处理 2 项。",
   "_displayHtml": "<div class='pg-card'>...</div>"
 }
 ```
 
-Optional response fields supported by the app:
+常用返回字段：
 
-| Field | Purpose |
+| 字段 | 作用 |
 |---|---|
-| `_displayText` | Human-readable fallback text |
-| `_displayHtml` | Rich mini-card in chat; use `HtmlOutputHelper` |
-| `_displayHtmlFull` | Full detail page for larger results |
-| `_openModule` | Open the module `index.html` page |
-| `_richContent` | Attach generated files/images |
-| `_vaultSave` | Offer generated content for user vault/save flows |
+| `_displayText` | 普通文本兜底展示。 |
+| `_displayHtml` | 对话中的富文本卡片。 |
+| `_displayHtmlFull` | 详情页完整内容。 |
+| `_openModule` | 打开模块 H5 页面。 |
+| `_richContent` | 返回图片、文件等富内容。 |
+| `_vaultSave` | 提供保存到保险箱的内容。 |
 
-## Common Development Patterns
+## 能力声明
 
-| Pattern | Template/reference |
+模块只声明真实需要的能力。不要为了方便一次性声明所有权限。
+
+| 能力 | 何时使用 |
 |---|---|
-| Pure logic, no permissions | `source/my_module`: `hello`, `doTask` |
-| Private module data | `source/my_module`: `savePreference`, `readPreference` |
-| Chat card UI | `source/my_module`: `renderSummary` |
-| Open H5 UI | `source/my_module`: `openPage` |
-| Network calls | `source/network_demo`: `httpGet` |
-| Images/files | See `qrcode`, `image_tools`, `notes` in PandaGenieSource |
+| `network` | 访问互联网或局域网接口。 |
+| `file_read` / `file_write` | 读取或写入用户可见文件。 |
+| `llm` | 需要 PandaGenie 代为调用当前 AI 模型。 |
+| `camera`, `location`, `contacts`, `calendar`, `clipboard`, `microphone` | 调用对应 Android 能力时声明。 |
 
-Private data via `ModuleStorage.from(context)` does not need `file_read` or `file_write`. Only declare file capabilities when you access user-visible shared storage.
+模块私有数据建议使用 `ModuleStorage`，不需要声明文件读写权限。
 
-## Writing Good API Descriptions
+## 模块调用 AI 模型
 
-The AI reads your `manifest.json` to understand what your module can do. Good descriptions = better AI behavior.
+需要摘要、改写、分类、提取、翻译或文档理解时，模块可以声明 `llm` 能力并调用 App 提供的 LLM 接口。
 
-**Good example:**
 ```json
-{
-  "name": "searchFiles",
-  "desc": "在指定目录下搜索文件，支持通配符匹配。当用户说【找文件】【搜索XX文件】时使用",
-  "desc_en": "Search files in a directory with wildcard support. Use when user says 'find files' or 'search for XX'",
-  "params": ["dir", "pattern"],
-  "paramDesc": ["搜索目录路径", "文件名匹配模式，如 *.jpg"],
-  "paramDesc_en": ["Directory path to search", "Filename pattern, e.g. *.jpg"]
-}
+"capabilities": ["llm"]
 ```
 
-**Bad example:**
-```json
-{
-  "name": "search",
-  "desc": "搜索",
-  "params": ["q"]
-}
+```java
+String resultJson = ModuleLlm.completeJson(
+    context,
+    new JSONObject()
+        .put("prompt", "用三条要点总结这段内容：" + text)
+        .put("action", "summarize")
+        .put("maxTokens", 512)
+        .put("temperature", 0.2)
+        .toString()
+);
 ```
 
-## Resources
+规则：
 
-- [Vibe Coding Guide](docs/VIBE_CODING_GUIDE.md)
-- [Full Module Development Guide](https://github.com/Rorschach123/PandaGenieSource/blob/main/module-dev-toolkit/MODULE_DEVELOPMENT_GUIDE.md)
-- [PandaGenie Source Code](https://github.com/Rorschach123/PandaGenieSource)
-- [Discord Community](https://discord.gg/Cfc7pjrjt2)
+- 未声明 `llm` 的模块会被 App 拦截。
+- 用户需要授予模块 AI 模型权限。
+- PandaGenie Official 的模块 LLM 调用会计入单独的模块模型用量。
+- 单次请求会被服务端限制 token 数，避免失控消耗。
+
+## 打包测试
+
+```powershell
+git clone https://github.com/Rorschach123/PandaGenieSource.git
+cd PandaGenieSource\module-dev-toolkit
+.\mk_module.ps1 -Action init-dev-signing
+.\mk_module.ps1 -Action pack -Modules "my_module"
+adb push ..\modules\my_module.mod /sdcard/PandaGenie/modules/
+```
+
+在 PandaGenie 中打开开发者模式并重启 App 后即可测试模块。
 
 ---
 
+## English
+
+This repository is the starter template for PandaGenie hot-loadable modules. Use it when you want to add an internal PandaGenie module that can be planned and executed by the assistant.
+
+If you want an independent Android app to be callable by PandaGenie, use [PandaGenieSDK](https://github.com/Rorschach123/PandaGenieSDK) and the [SDK Provider Template](https://github.com/Rorschach123/PandaGenieSDK-Provider-Template) instead.
+
+Quick path:
+
+1. Create a repository from this template.
+2. Copy `source/my_module`.
+3. Update `manifest.json` with IDs, APIs, parameters, capabilities, and bilingual descriptions.
+4. Implement `invoke()` in your plugin class.
+5. Build and sign through `PandaGenieSource/module-dev-toolkit`.
+6. Submit through [Module Submission](https://cf.pandagenie.ai/sign).
+
+See `source/README.md` for example details.
+
 ## License
 
-LGPL-3.0 — See [LICENSE](LICENSE) for details.
+LGPL-3.0.
